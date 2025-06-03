@@ -49,6 +49,14 @@ pub fn tx_estimated_size_fjord(input: &[u8]) -> u64 {
         .max(MIN_TX_SIZE_SCALED)
 }
 
+/// Calculate the estimated compressed transaction size in bytes.
+/// This value is computed based on the following formula:
+/// max(minTransactionSize, intercept + fastlzCoef*fastlzSize) / 1e6
+pub fn tx_estimated_size_fjord_bytes(input: &[u8]) -> u64 {
+    let estimated_size = tx_estimated_size_fjord(input);
+    estimated_size.wrapping_div(1_000_000)
+}
+
 /// Returns the length of the data after compression through FastLZ.
 ///
 /// The u32s match op-geth's Go port.
