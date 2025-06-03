@@ -33,8 +33,8 @@ pub const MIN_TX_SIZE_SCALED: u64 = 100 * 1_000_000;
 ///
 /// In fjord, Calldata costs 16 gas per byte after compression.
 pub fn data_gas_fjord(input: &[u8]) -> u64 {
-    let estimated_size = tx_estimated_size_fjord_bytes(input);
-    estimated_size.saturating_mul(NON_ZERO_BYTE_COST)
+    let estimated_size = tx_estimated_size_fjord(input);
+    estimated_size.saturating_mul(NON_ZERO_BYTE_COST).wrapping_div(1_000_000)
 }
 
 /// Calculate the estimated compressed transaction size in bytes, scaled by 1e6.
@@ -49,7 +49,7 @@ pub fn tx_estimated_size_fjord(input: &[u8]) -> u64 {
         .max(MIN_TX_SIZE_SCALED)
 }
 
-/// Calculate the estimated compressed transaction size in bytes, scaled by 1e6.
+/// Calculate the estimated compressed transaction size in bytes.
 /// This value is computed based on the following formula:
 /// max(minTransactionSize, intercept + fastlzCoef*fastlzSize) / 1e6
 pub fn tx_estimated_size_fjord_bytes(input: &[u8]) -> u64 {
